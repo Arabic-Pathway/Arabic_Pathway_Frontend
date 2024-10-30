@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { PenLine, User, Image, Tags, Send } from 'lucide-react'
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import the styles for the editor
-import { marked } from 'marked'; // Import the marked library
+import { marked } from 'marked'; 
+import JoditEditor  from 'jodit-react'; // Import JoditEditor
+
+
 
 async function createBlogPost(title, content, categories, author, img) {
 
@@ -26,7 +27,6 @@ async function createBlogPost(title, content, categories, author, img) {
   const data = {
     message: `Add new blog post: ${title}`,
     content: btoa(unescape(encodeURIComponent(markdownContent))), 
-    // content: btoa(unescape((markdownContent))), // Base64 encoded content
     branch: BRANCH,
   };
 
@@ -59,22 +59,23 @@ async function createBlogPost(title, content, categories, author, img) {
 
 export default function PostBlog() {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [categories, setCategories] = useState([]); // Changed to an array for multiple categories
   const [author, setAuthor] = useState('Huzaifa Qureshi'); // Default author
   const [img, setImg] = useState(''); // Image URL
+  const [editorContent, setEditorContent] = useState(''); // New state for Jodit editor content
 
-  const handleCategoryChange = (e) => {
-    const value = e.target.value;
+
+
+  const handleCategoryChange = (category) => {
     setCategories((prev) => 
-      prev.includes(value) ? prev.filter((cat) => cat !== value) : [...prev, value]
+      prev.includes(category) ? prev.filter((cat) => cat !== category) : [...prev, category]
     );
+
   };
 
   const handleSubmit = async () => {
     try {
-      // Convert HTML content to markdown
-      const markdownContent = generateMarkdownContent(title, categories, author, img, content);
+      const markdownContent = generateMarkdownContent(title, categories, author, img, editorContent);
       await createBlogPost(title, markdownContent, categories.join(', '), author, img); // Join categories for markdown
       alert('Blog post created successfully!');
     } catch (error) {
@@ -94,9 +95,11 @@ export default function PostBlog() {
   description: ""
 ---
     
-${marked(content)}  // Convert HTML to markdown
+${marked(content)}
     `;
   };
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
@@ -120,21 +123,12 @@ ${marked(content)}  // Convert HTML to markdown
               </div>
             </div>
 
-            <div className='h-[400px]'>
+            <div >
               <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">Content</label>
-              <ReactQuill 
-                value={content}
-                onChange={setContent}
-                className="bg-white rounded-md border border-gray-300 h-[80%]"
-                modules={{
-                  toolbar: [
-                    [{ 'header': [1, 2, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['image', 'code-block'],
-                    ['clean']
-                  ],
-                }}
+              <JoditEditor 
+                value={editorContent}
+                onChange={setEditorContent}
+                className="bg-white rounded-md border border-gray-300 h-[400px] overflow-scroll"
               />
             </div>
 
@@ -145,12 +139,13 @@ ${marked(content)}  // Convert HTML to markdown
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 {['Basic_nahw', 'Basic_sarf', 'Sarf', 'Quran'].map((category) => (
-                  <label key={category} className="inline-flex items-center">
+                  <label  key={category} className="inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
+                      value={category}
                       checked={categories.includes(category)}
                       onChange={() => handleCategoryChange(category)}
-                      className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                      // className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
                     />
                     <span className="ml-2 text-gray-700">{category}</span>
                   </label>
