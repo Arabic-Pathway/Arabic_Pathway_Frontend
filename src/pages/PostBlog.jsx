@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PenLine, User, Image, Tags, Send } from 'lucide-react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles for the editor
 import { marked } from 'marked'; // Import the marked library
@@ -98,98 +99,105 @@ ${marked(content)}  // Convert HTML to markdown
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Create Blog Post</h1>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full p-2 mb-4 border border-gray-300 rounded"
-      />
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Content:</h2>
-        <ReactQuill 
-          value={content}
-          onChange={setContent}
-          className="border border-gray-300 rounded"
-          modules={{
-            toolbar: [
-              [{ 'header': [1, 2, false] }],
-              ['bold', 'italic', 'underline'],
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              ['image', 'code-block'],
-              ['clean'] // remove formatting button
-            ],
-          }}
-        />
-      </div>
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Select Categories:</h2>
-        <div className="flex flex-col space-y-2">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value="Basic_nahw"
-              checked={categories.includes("Basic_nahw")}
-              onChange={handleCategoryChange}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-2">Basic_nahw</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value="Basic_sarf"
-              checked={categories.includes("Basic_sarf")}
-              onChange={handleCategoryChange}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-2">Basic_sarf</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value="Sarf"
-              checked={categories.includes("Sarf")}
-              onChange={handleCategoryChange}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-2">Sarf</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value="Quran"
-              checked={categories.includes("Quran")}
-              onChange={handleCategoryChange}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="ml-2">Quran</span>
-          </label>
-          {/* Add more categories as needed */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
+      <div className="w-full max-w-3xl bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Create Blog Post</h1>
+          
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <div className="relative">
+                <PenLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Enter post title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className='h-[400px]'>
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+              <ReactQuill 
+                value={content}
+                onChange={setContent}
+                className="bg-white rounded-md border border-gray-300 h-[80%]"
+                modules={{
+                  toolbar: [
+                    [{ 'header': [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['image', 'code-block'],
+                    ['clean']
+                  ],
+                }}
+              />
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                <Tags className="mr-2 text-gray-600 w-5 h-5" />
+                Select Categories
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                {['Basic_nahw', 'Basic_sarf', 'Sarf', 'Quran'].map((category) => (
+                  <label key={category} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={categories.includes(category)}
+                      onChange={() => handleCategoryChange(category)}
+                      className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                    />
+                    <span className="ml-2 text-gray-700">{category}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">Author</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  id="author"
+                  placeholder="Enter author name"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+              <div className="relative">
+                <Image className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  id="image"
+                  placeholder="Enter Thumbnail Image URL"
+                  value={img}
+                  onChange={(e) => setImg(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 flex items-center justify-center"
+            >
+              <Send className="mr-2 w-5 h-5" />
+              Publish Blog Post
+            </button>
+          </div>
         </div>
       </div>
-      <input
-        type="text"
-        placeholder="Author"
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        className="w-full p-2 mb-4 border border-gray-300 rounded"
-      />
-      <input
-        type="text"
-        placeholder="Image URL"
-        value={img}
-        onChange={(e) => setImg(e.target.value)}
-        className="w-full p-2 mb-4 border border-gray-300 rounded"
-      />
-      <button
-        onClick={handleSubmit}
-        className="w-full bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600 transition duration-200"
-      >
-        Publish Blog Post
-      </button>
     </div>
   );
 }
